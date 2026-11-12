@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap - Community Skill Exchange Platform</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: #eef2ff;
+            color: var(--primary);
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: var(--gradient);
+            color: #ffffff;
+            padding: 60px 20px 85px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            max-width: 650px;
+            margin: auto;
+            opacity: 0.95;
+        }
+
+        /* Search Bar */
+        .search-area {
+            max-width: 900px;
+            margin: -38px auto 35px;
+            padding: 0 20px;
+        }
+
+        .search-bar {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 14px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input,
+        .search-bar select {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-bar input:focus,
+        .search-bar select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px 50px;
+        }
+
+        .section-heading {
+            margin: 40px 0 20px;
+        }
+
+        .section-heading h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* Pure CSS Category Filter Tabs */
+        .filter-radio {
+            display: none;
+        }
+
+        .filter-labels {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-labels label {
+            padding: 8px 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #cat-all:checked ~ .filter-labels label[for="cat-all"],
+        #cat-tech:checked ~ .filter-labels label[for="cat-tech"],
+        #cat-design:checked ~ .filter-labels label[for="cat-design"],
+        #cat-math:checked ~ .filter-labels label[for="cat-math"] {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* Profile Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 22px;
+        }
+
+        .profile-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.07);
+        }
+
+        /* CSS Filter Logic */
+        #cat-tech:checked ~ .cards-grid .profile-card:not(.tech),
+        #cat-design:checked ~ .cards-grid .profile-card:not(.design),
+        #cat-math:checked ~ .cards-grid .profile-card:not(.math) {
+            display: none;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #e0e7ff;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .stars {
+            color: var(--warning);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .badge-group {
+            margin-bottom: 12px;
+        }
+
+        .badge-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .offered-title { color: #047857; }
+        .wanted-title { color: #b91c1c; }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 5px 5px 0;
+        }
+
+        .tag-green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .tag-red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .bio {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 18px;
+        }
+
+        .btn-outline {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8fafc;
+            color: var(--primary);
+            border: 1px solid #c7d2fe;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* Split Sections */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .row-2 {
+            display: flex;
+            gap: 12px;
+        }
+
+        .row-2 > div {
+            flex: 1;
+        }
+
+        /* Interactive Star Rating Widget */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 4px;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 24px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: var(--warning);
+        }
+
+        /* Messaging UI */
+        .chat-window {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            height: 290px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .bubble {
+            max-width: 82%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .bubble-in {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            align-self: flex-start;
+        }
+
+        .bubble-out {
+            background: var(--primary);
+            color: #ffffff;
+            align-self: flex-end;
+        }
+
+        /* Moderation Table */
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--muted);
+            padding: 13px 16px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 13px 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .status {
+            padding: 4px 9px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-pending { background: #fef3c7; color: #b45309; }
+        .status-resolved { background: #d1fae5; color: #065f46; }
+
+        /* Pure CSS Modal (:target) for Working Feel */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 999;
+        }
+
+        .modal-overlay:target {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-box h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 13px;
+        }
+
+        footer strong {
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .split-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">SkillSwap Local</a>
+            <ul class="nav-links">
+                <li><a href="#profiles">Profiles &amp; Skills</a></li>
+                <li><a href="#exchange">Exchange &amp; Schedule</a></li>
+                <li><a href="#messages">Messaging &amp; Rating</a></li>
+                <li><a href="#moderation">Reporting &amp; Moderation</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Community Skill Exchange Platform</h1>
+        <p>Exchange useful skills locally through structured profiles, session scheduling, peer ratings, and community moderation.</p>
+    </section>
+
+    <!-- Search Bar -->
+    <div class="search-area">
+        <form action="#profiles" class="search-bar">
+            <input type="text" placeholder="Search skills (e.g. Python, Graphic Design, Mathematics)...">
+            <select>
+                <option value="">All Local Areas</option>
+                <option value="campus">Campus Hostel Zone</option>
+                <option value="city">City Center</option>
+                <option value="online">Online / Hybrid</option>
+            </select>
+            <button type="submit" class="btn">Search Skills</button>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Profiles & Skills Offered/Wanted -->
+        <div class="section-heading" id="profiles">
+            <h2>Community Member Profiles</h2>
+            <p>Filter by category below or browse skills offered and wanted by verified local members.</p>
+        </div>
+
+        <!-- Pure CSS Filter Buttons -->
+        <input type="radio" name="category" id="cat-all" class="filter-radio" checked>
+        <input type="radio" name="category" id="cat-tech" class="filter-radio">
+        <input type="radio" name="category" id="cat-design" class="filter-radio">
+        <input type="radio" name="category" id="cat-math" class="filter-radio">
+
+        <div class="filter-labels">
+            <label for="cat-all">All Skills</label>
+            <label for="cat-tech">Programming &amp; Tech</label>
+            <label for="cat-design">Design &amp; Editing</label>
+            <label for="cat-math">Academics &amp; Maths</label>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Profile 1 -->
+            <div class="profile-card tech">
+                <div>
+                    <div class="profile-top">
+                        <div class="avatar">AM</div>
+                        <div>
+                            <h3>Aman Mehta</h3>
+                            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733; (4.9 • 15 Swaps)</div>
+                        </div>
+                    </div>
+                    <div class="badge-group">
+                        <span class="badge-title offered-title">Skills Offered:</span>
+                        <span class="tag tag-green">Python Programming</span>
+                        <span class="tag tag-green">HTML5 &amp; CSS3</span>
+                    </div>
+                    <div class="badge-group">
+                        <span class="badge-title wanted-title">Skills Wanted:</span>
+                        <span class="tag tag-red">Video Editing</span>
+                        <span class="tag tag-red">Public Speaking</span>
+                    </div>
+                    <p class="bio">Happy to teach beginner Python logic and website layouts in exchange for short-video editing tricks.</p>
+                </div>
+                <a href="#exchange" class="btn-outline">Send Exchange Request</a>
+            </div>
+
+            <!-- Profile 2 -->
+            <div class="profile-card design">
+                <div>
+                    <div class="profile-top">
+                        <div class="avatar" style="background:#fce7f3; color:#db2777;">RS</div>
+                        <div>
+                            <h3>Rhea Sharma</h3>
+                            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9734; (4.7 • 11 Swaps)</div>
+                        </div>
+                    </div>
+                    <div class="badge-group">
+                        <span class="badge-title offered-title">Skills Offered:</span>
+                        <span class="tag tag-green">Graphic Design</span>
+                        <span class="tag tag-green">UI Prototyping</span>
+                    </div>
+                    <div class="badge-group">
+                        <span class="badge-title wanted-title">Skills Wanted:</span>
+                        <span class="tag tag-red">Engineering Graphics</span>
+                        <span class="tag tag-red">AutoCAD Basics</span>
+                    </div>
+                    <p class="bio">Can help you design clean posters and thumbnails. Looking for help with orthographic projections.</p>
+                </div>
+                <a href="#exchange" class="btn-outline">Send Exchange Request</a>
+            </div>
+
+            <!-- Profile 3 -->
+            <div class="profile-card math">
+                <div>
+                    <div class="profile-top">
+                        <div class="avatar" style="background:#d1fae5; color:#059669;">KK</div>
+                        <div>
+                            <h3>Kunal Kumar</h3>
+                            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733; (5.0 • 19 Swaps)</div>
+                        </div>
+                    </div>
+                    <div class="badge-group">
+                        <span class="badge-title offered-title">Skills Offered:</span>
+                        <span class="tag tag-green">Engineering Mathematics</span>
+                        <span class="tag tag-green">Matrices &amp; Calculus</span>
+                    </div>
+                    <div class="badge-group">
+                        <span class="badge-title wanted-title">Skills Wanted:</span>
+                        <span class="tag tag-red">Git &amp; GitHub</span>
+                        <span class="tag tag-red">Spoken English</span>
+                    </div>
+                    <p class="bio">Strong command over calculus and linear algebra. Want to practice daily English communication.</p>
+                </div>
+                <a href="#exchange" class="btn-outline">Send Exchange Request</a>
+            </div>
+        </div>
+
+        <!-- Exchange Request, Scheduling & Messaging -->
+        <div class="section-heading" id="exchange">
+            <h2>Exchange Requests, Scheduling &amp; Messaging</h2>
+            <p>Book a learning slot with a partner or coordinate details via direct messaging.</p>
+        </div>
+
+        <div class="split-grid">
+            <!-- Exchange & Scheduling Form -->
+            <div class="panel">
+                <h3 style="margin-bottom: 14px;">Schedule a Skill Exchange</h3>
+                <form action="#success-modal">
+                    <div class="form-group">
+                        <label>Select Member</label>
+                        <select required>
+                            <option value="">-- Choose Community Partner --</option>
+                            <option>Aman Mehta (Python / HTML)</option>
+                            <option>Rhea Sharma (Graphic Design)</option>
+                            <option>Kunal Kumar (Mathematics)</option>
+                        </select>
+                    </div>
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>Skill You Offer</label>
+                            <input type="text" placeholder="e.g. Video Editing" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Skill You Want</label>
+                            <input type="text" placeholder="e.g. Python Basics" required>
+                        </div>
+                    </div>
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>Preferred Date</label>
+                            <input type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Time Slot</label>
+                            <select required>
+                                <option>Morning (10:00 AM - 11:30 AM)</option>
+                                <option>Afternoon (3:00 PM - 4:30 PM)</option>
+                                <option>Evening (6:30 PM - 8:00 PM)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Session Topic / Notes</label>
+                        <textarea rows="3" placeholder="Mention specific topics you want to cover..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="width:100%;">Send Exchange Request</button>
+                </form>
+            </div>
+
+            <!-- Messaging & Rating Panel -->
+            <div class="panel" id="messages">
+                <h3 style="margin-bottom: 14px;">Direct Messages &amp; Peer Rating</h3>
+                <div class="chat-window">
+                    <div class="bubble bubble-in">
+                        <strong>Aman Mehta:</strong> Hi! Are we meeting at the library or online for the Python exchange?
+                    </div>
+                    <div class="bubble bubble-out">
+                        <strong>You:</strong> Let's meet at the central library at 6:30 PM today!
+                    </div>
+                    <div class="bubble bubble-in">
+                        <strong>Aman Mehta:</strong> Sounds great, see you there with my laptop.
+                    </div>
+                </div>
+                <form action="#message-modal" style="display:flex; gap:8px; margin-bottom:20px;">
+                    <input type="text" placeholder="Write a reply..." required style="flex:1; padding:10px; border:1px solid var(--border); border-radius:8px;">
+                    <button type="submit" class="btn">Send</button>
+                </form>
+
+                <!-- Interactive Rating Box -->
+                <form action="#rating-modal" style="border-top:1px solid var(--border); padding-top:15px;">
+                    <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Rate Your Last Session with Aman:</label>
+                    <div class="star-rating">
+                        <input type="radio" id="s5" name="rate" value="5" checked><label for="s5">&#9733;</label>
+                        <input type="radio" id="s4" name="rate" value="4"><label for="s4">&#9733;</label>
+                        <input type="radio" id="s3" name="rate" value="3"><label for="s3">&#9733;</label>
+                        <input type="radio" id="s2" name="rate" value="2"><label for="s2">&#9733;</label>
+                        <input type="radio" id="s1" name="rate" value="1"><label for="s1">&#9733;</label>
+                    </div>
+                    <button type="submit" class="btn-outline" style="width:100%; margin-top:8px; cursor:pointer;">Submit Rating</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Reporting & Moderation Section -->
+        <div class="section-heading" id="moderation">
+            <h2>Community Reporting &amp; Moderation</h2>
+            <p>Maintain a safe learning environment by reporting issues and tracking moderator actions.</p>
+        </div>
+
+        <div class="split-grid">
+            <!-- Report Form -->
+            <div class="panel">
+                <h3 style="margin-bottom: 14px;">Submit a User Report</h3>
+                <form action="#report-modal">
+                    <div class="form-group">
+                        <label>Reported Member Name</label>
+                        <input type="text" placeholder="Enter member name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason for Report</label>
+                        <select required>
+                            <option value="">-- Select Violation --</option>
+                            <option>Missed Scheduled Session (No-Show)</option>
+                            <option>Misleading or Fake Skill Listing</option>
+                            <option>Unprofessional Behavior</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Details</label>
+                        <textarea rows="2" placeholder="Describe what happened..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="width:100%; background:var(--danger);">Submit Report to Moderators</button>
+                </form>
+            </div>
+
+            <!-- Moderation Log -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Member</th>
+                            <th>Issue Type</th>
+                            <th>Moderation Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#MOD-204</td>
+                            <td>Vikram S.</td>
+                            <td>Missed Scheduled Session</td>
+                            <td><span class="status status-pending">Under Review</span></td>
+                        </tr>
+                        <tr>
+                            <td>#MOD-198</td>
+                            <td>Neha G.</td>
+                            <td>Duplicate Skill Post</td>
+                            <td><span class="status status-resolved">Warning Issued</span></td>
+                        </tr>
+                        <tr>
+                            <td>#MOD-185</td>
+                            <td>Rohan D.</td>
+                            <td>Spam Request</td>
+                            <td><span class="status status-resolved">Account Restricted</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Pure CSS Confirmation Modals -->
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Exchange Request Sent!</h3>
+            <p>Your skill swap proposal and preferred schedule have been sent to the member.</p>
+            <a href="#exchange" class="btn">Done</a>
+        </div>
+    </div>
+
+    <div id="message-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Message Delivered!</h3>
+            <p>Your message has been sent to your exchange partner.</p>
+            <a href="#messages" class="btn">Back to Chat</a>
+        </div>
+    </div>
+
+    <div id="rating-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Thank You for Rating!</h3>
+            <p>Your feedback helps keep our local skill exchange community trustworthy.</p>
+            <a href="#messages" class="btn">Close</a>
+        </div>
+    </div>
+
+    <div id="report-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Report Logged</h3>
+            <p>Our community moderators have received your report and will review it shortly.</p>
+            <a href="#moderation" class="btn">Close</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>Community Skill Exchange Platform</strong> | Project Codes: RK4P26XPB37 • RK4P26XPB39 • RK4P26XPB40</p>
+        <p style="margin-top:5px;">Built using Pure HTML5 &amp; CSS3</p>
+    </footer>
+
+</body>
+</html>
